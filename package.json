@@ -1,6 +1,6 @@
 {
-	"name": "funky_http",
-	"version": "1.0.0",
+	"name": "funky-http",
+	"version": "0.0.0",
 	"main": "index.js",
 	"author": "Jacob Jonsson",
 	"license": "MIT",
