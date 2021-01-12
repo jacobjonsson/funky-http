@@ -1,0 +1,43 @@
+import {IncomingMessage} from "http";
+
+export function parseCookies(req: IncomingMessage) {
+	return parse(req.headers?.cookie || "");
+}
+
+function parse(str: string) {
+	const obj: Record<string, any> = {};
+	const pairs = str.split(/; */);
+
+	for (let i = 0; i < pairs.length; i++) {
+		const pair = pairs[i];
+		let eq_idx = pair.indexOf("=");
+
+		// skip things that don't look like key=value
+		if (eq_idx < 0) {
+			continue;
+		}
+
+		const key = pair.substr(0, eq_idx).trim();
+		let val = pair.substr(++eq_idx, pair.length).trim();
+
+		// quoted values
+		if ('"' == val[0]) {
+			val = val.slice(1, -1);
+		}
+
+		// only assign once
+		if (obj[key] == undefined) {
+			obj[key] = tryDecode(val, decodeURIComponent);
+		}
+	}
+
+	return obj;
+}
+
+function tryDecode(str: string, decode: any) {
+	try {
+		return decode(str);
+	} catch (e) {
+		return str;
+	}
+}
